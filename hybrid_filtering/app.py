@@ -77,7 +77,7 @@ def recommendations():
     # Step 3: Handle categorical columns using One-Hot Encoding
     # Example: Convert 'SUPPLIER EMPLOYEE RANGE' to one-hot encoded features
     # One-hot encoding for categorical columns
-    encoder = OneHotEncoder(sparse=True)
+    encoder = OneHotEncoder(sparse_output=True)
     emp_range_encoded = encoder.fit_transform(filtered_data[['SUPPLIER EMPLOYEE RANGE']])
     turnover_encoded = encoder.fit_transform(filtered_data[['SUPPLIER TURN OVER RANGE']])
     cpv_encoded = encoder.fit_transform(filtered_data[['CPV Code Description']])
