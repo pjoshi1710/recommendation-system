@@ -33,7 +33,7 @@ df = pd.read_csv(input_file_path)
 # Clean up data
 df.columns = df.columns.str.strip()
 required_columns = ["Supplier Name", "Buyer ID", "Buyer Name", "CPV Code Description", "SUPPLIER REGION CODE", "Supplier Country New", "SUPPLIER EMPLOYEE RANGE", "SUPPLIER TURN OVER RANGE"]
-df = df.replace([np.inf, -np.inf], np.nan).dropna(subset=required_columns)
+# df = df.replace([np.inf, -np.inf], np.nan).dropna(subset=required_columns)
 
 @app.route('/')
 def index():
