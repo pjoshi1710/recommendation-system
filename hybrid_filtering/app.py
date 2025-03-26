@@ -13,6 +13,7 @@ from sklearn.preprocessing import StandardScaler
 from scipy.sparse import csr_matrix
 import os
 
+
 # Initialize Flask app
 app = Flask(__name__)
 
@@ -24,14 +25,22 @@ input_file_path = os.path.join(
     "01_AMAL_Master_Data_PCS.csv"
 )
 
+# Verify the file path
+print("Current Directory:", os.getcwd())
+print("CSV Exists:", os.path.exists(input_file_path))
+
 # Read the data
 # input_file_path = "C:/Users/Prashant Joshi/OneDrive - elcom.com/Documents/Data Science/Local Spend Analytics/SG/01_AMAL_Master_Data_PCS.csv"
 df = pd.read_csv(input_file_path)
+print("DataFrame Preview:")
+print(df.head())
+print("Columns:", df.columns)
 
 # logging.info(f"Columns in the DataFrame: {df.columns.tolist()}")
 
 # Clean up data
 df.columns = df.columns.str.strip()
+print("Columns after stripping:", df.columns.tolist())
 required_columns = ["Supplier Name", "Buyer ID", "Buyer Name", "CPV Code Description", "SUPPLIER REGION CODE", "Supplier Country New", "SUPPLIER EMPLOYEE RANGE", "SUPPLIER TURN OVER RANGE"]
 # df = df.replace([np.inf, -np.inf], np.nan).dropna(subset=required_columns)
 
@@ -170,5 +179,5 @@ def recommendations():
 
 
 if __name__ == '__main__':
-    app.run(host='10.40.8.22', port=5000)
-    # app.run(debug=True)
+    # app.run(host='10.40.8.22', port=5000)
+    app.run(debug=True)
