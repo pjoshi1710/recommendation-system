@@ -179,5 +179,5 @@ def recommendations():
 
 
 if __name__ == '__main__':
-    # app.run(host='10.40.8.22', port=5000)
-    app.run(debug=True)
+    app.run(host='10.40.5.221', port=5000)
+    # app.run(debug=True)
