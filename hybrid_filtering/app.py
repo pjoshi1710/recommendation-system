@@ -77,29 +77,32 @@ def recommendations():
         return "No relevant suppliers found for recommendations.", 400
 
     # Step 3: Handle categorical columns using One-Hot Encoding
-    encoder = OneHotEncoder(sparse_output=False)
-    
-    for col in ["SUPPLIER EMPLOYEE RANGE", "SUPPLIER TURN OVER RANGE", "CPV Code Description"]:
-        if col in filtered_data.columns:
-            filtered_data[col + "_Encoded"] = encoder.fit_transform(filtered_data[[col]])
+    # Example: Convert 'SUPPLIER EMPLOYEE RANGE' to one-hot encoded features
+    # One-hot encoding for categorical columns
+    encoder = OneHotEncoder(sparse_output=True)
+    emp_range_encoded = encoder.fit_transform(filtered_data[['SUPPLIER EMPLOYEE RANGE']])
+    turnover_encoded = encoder.fit_transform(filtered_data[['SUPPLIER TURN OVER RANGE']])
+    cpv_encoded = encoder.fit_transform(filtered_data[['CPV Code Description']])
 
-    # Calculate cosine similarity
-    similarity_matrices = {}
-    
-    for col in ["CPV Code Description", "SUPPLIER EMPLOYEE RANGE", "SUPPLIER TURN OVER RANGE"]:
-        if col in filtered_data.columns:
-            encoded_matrix = encoder.fit_transform(filtered_data[[col]])
-            similarity_matrices[col] = cosine_similarity(encoded_matrix)
+    # Calculating cosine similarity
+    content_similarity_cpv = cosine_similarity(cpv_encoded)
+    content_similarity_emp_range = cosine_similarity(emp_range_encoded)
+    content_similarity_turnover = cosine_similarity(turnover_encoded)
 
-    # Combine similarity scores
-    if all(key in similarity_matrices for key in similarity_matrices):
-        filtered_data["Content Similarity"] = (
-            0.4 * similarity_matrices["CPV Code Description"][0] +
-            0.3 * similarity_matrices["SUPPLIER EMPLOYEE RANGE"][0] +
-            0.3 * similarity_matrices["SUPPLIER TURN OVER RANGE"][0]
+
+    # Step 3.4: Combine the similarities
+    # Combine the different similarity matrices into one, ensuring you can blend the similarities appropriately
+    # Here we simply average them, but you can give different weights to each similarity based on importance
+
+    # Ensure matrices match filtered data dimensions
+    if len(filtered_data) > 0:
+        filtered_data['Content Similarity'] = (
+            0.4 * content_similarity_cpv[0] +
+            0.3 * content_similarity_emp_range[0] +
+            0.3 * content_similarity_turnover[0]
         )
     else:
-        return "Insufficient data to compute content similarity.", 400
+        return "Not enough data to calculate similarity.", 400
 
     # Step 4: Collaborative Filtering
     interaction_matrix = df.pivot_table(index="Supplier Name", columns="Buyer ID", aggfunc="size", fill_value=0)
